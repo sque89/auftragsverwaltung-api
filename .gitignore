@@ -1,12 +1,18 @@
-*.class
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+###> symfony/framework-bundle ###
+/.env
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
 
-# Package Files #
-*.jar
-*.war
-*.ear
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
+###> symfony/web-server-bundle ###
+/.web-server-pid
+###< symfony/web-server-bundle ###
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+###> ide ###
+/nbproject/private/
+###< ide ###
