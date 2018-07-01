@@ -29,6 +29,16 @@ class User implements UserInterface, \Serializable {
     private $password;
 
     /**
+     * @ORM\Column(type="string", length=50, unique=true)
+     */
+    private $firstname;
+
+    /**
+     * @ORM\Column(type="string", length=50, unique=true)
+     */
+    private $lastname;
+
+    /**
      * @ORM\Column(type="string", length=60, unique=true)
      */
     private $email;
@@ -55,6 +65,14 @@ class User implements UserInterface, \Serializable {
         return $this->id;
     }
 
+    public function getFirstname() {
+        return $this->firstname;
+    }
+
+    public function getLastname() {
+        return $this->lastname;
+    }
+
     public function getEmail() {
         return $this->email;
     }
@@ -65,6 +83,14 @@ class User implements UserInterface, \Serializable {
 
     public function setId($id) {
         $this->id = $id;
+    }
+
+    public function setFirstname($firstname) {
+        $this->firstname = $firstname;
+    }
+
+    public function setLastname($lastname) {
+        $this->lastname = $lastname;
     }
 
     public function setEmail($email) {
@@ -92,7 +118,7 @@ class User implements UserInterface, \Serializable {
     public function getRoles() {
         $rolesOfUser = array();
         foreach ($this->roles as $key => $value) {
-            $rolesOfUser[] = "ROLE_".$value->getName();
+            $rolesOfUser[] = $value->getName();
         }
         return $rolesOfUser;
     }
