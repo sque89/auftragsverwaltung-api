@@ -111,6 +111,10 @@ class User implements UserInterface, \Serializable {
         return null;
     }
 
+    public function setPassword($password) {
+        $this->password = $password;
+    }
+
     public function getPassword() {
         return $this->password;
     }
@@ -149,4 +153,7 @@ class User implements UserInterface, \Serializable {
                 ) = unserialize($serialized);
     }
 
+    public function isAdmin() {
+        return array_search('ROLE_ADMIN', $this->getRoles());
+    }
 }
