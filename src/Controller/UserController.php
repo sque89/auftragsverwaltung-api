@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
@@ -37,6 +38,7 @@ class UserController extends Controller {
 
     /**
      * @Route("/api/users", name="getAllUsers", methods="GET")
+     * @Security("has_role('ROLE_ADMIN')")
      */
     public function getAllUsers() {
         $users = $this->entityManager->getRepository(User::class)->findAll();

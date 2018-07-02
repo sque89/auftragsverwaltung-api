@@ -11,6 +11,7 @@
         "lexik/jwt-authentication-bundle": "^2.4",
         "sensio/framework-extra-bundle": "^5.2",
         "symfony/console": "^4.1",
+        "symfony/expression-language": "^4.1",
         "symfony/flex": "^1.0",
         "symfony/framework-bundle": "^4.1",
         "symfony/lts": "^4@dev",
