@@ -29,12 +29,12 @@ class User implements UserInterface, \Serializable {
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=50, unique=true)
+     * @ORM\Column(type="string", length=50)
      */
     private $firstname;
 
     /**
-     * @ORM\Column(type="string", length=50, unique=true)
+     * @ORM\Column(type="string", length=50)
      */
     private $lastname;
 
@@ -154,6 +154,6 @@ class User implements UserInterface, \Serializable {
     }
 
     public function isAdmin() {
-        return array_search('ROLE_ADMIN', $this->getRoles());
+        return array_search('ROLE_ADMIN', $this->getRoles()) !== false;
     }
 }
