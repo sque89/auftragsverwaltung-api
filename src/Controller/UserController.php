@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
+use App\Entity\Role;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -15,12 +16,6 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class UserController extends Controller {
-
-    private static $STATUS_CODES = array(
-        'SUCCESS' => 0,
-        'WRONG_PASSWORD' => 1,
-        'PASSWORD_MISMATCH' => 2
-    );
     private $entityManager;
     private $encoder;
     private $serializer;
@@ -62,10 +57,77 @@ class UserController extends Controller {
      * @Security("has_role('ROLE_ADMIN')")
      */
     public function deleteUserByUsername($username) {
-        // TODO prevent deleting currently logged in user
+        if ($username === $this->getUser()->getUsername()) {
+            return $this->json(array('code' => 403, 'message' => 'Not allowed to delete yourself'), 403);
+        }
+
         try {
             $user = $this->entityManager->getRepository(User::class)->findOneByUsername($username);
             $this->entityManager->remove($user);
+            $this->entityManager->flush();
+            return new Response(
+                    $this->serializer->serialize($user, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
+            );
+        } catch (Exception $ex) {
+            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
+        }
+    }
+
+    /**
+     * @Route("/api/user/activate/{username}", name="activateUserByUsername", methods="POST")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+    public function activateUserByUsername($username) {
+        if ($username === $this->getUser()->getUsername()) {
+            return $this->json(array('code' => 403, 'message' => 'Not allowed to activate yourself'), 403);
+        }
+
+        try {
+            $user = $this->entityManager->getRepository(User::class)->findOneByUsername($username);
+            $user->setIsActive(true);
+            $this->entityManager->flush();
+            return new Response(
+                    $this->serializer->serialize($user, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
+            );
+        } catch (Exception $ex) {
+            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
+        }
+    }
+
+    /**
+     * @Route("/api/user/deactivate/{username}", name="deactivateUserByUsername", methods="POST")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+    public function deactivateUserByUsername($username) {
+        if ($username === $this->getUser()->getUsername()) {
+            return $this->json(array('code' => 403, 'message' => 'Not allowed to deactivate yourself'), 403);
+        }
+
+        try {
+            $user = $this->entityManager->getRepository(User::class)->findOneByUsername($username);
+            $user->setIsActive(false);
+            $this->entityManager->flush();
+            return new Response(
+                    $this->serializer->serialize($user, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
+            );
+        } catch (Exception $ex) {
+            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
+        }
+    }
+
+    /**
+     * @Route("/api/user/roles/{username}", name="changeRolesByUsername", methods="POST")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+    public function changeRolesByUsername(Request $request, $username) {
+        try {
+            $rolesToSet = [];
+            $requestData = json_decode($request->getContent(), true);
+            foreach($requestData as $role) {
+                $rolesToSet[] = $this->entityManager->getRepository(Role::class)->findOneByName($role);
+            }
+            $user = $this->entityManager->getRepository(User::class)->findOneByUsername($username);
+            $user->setRoles($rolesToSet);
             $this->entityManager->flush();
             return new Response(
                     $this->serializer->serialize($user, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']

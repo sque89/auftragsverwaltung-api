@@ -127,6 +127,10 @@ class User implements UserInterface, \Serializable {
         return $rolesOfUser;
     }
 
+    public function setRoles($roles) {
+        $this->roles = $roles;
+    }
+
     public function eraseCredentials() {
 
     }
@@ -151,9 +155,5 @@ class User implements UserInterface, \Serializable {
                 // see section on salt below
                 // $this->salt
                 ) = unserialize($serialized);
-    }
-
-    public function isAdmin() {
-        return array_search('ROLE_ADMIN', $this->getRoles()) !== false;
     }
 }

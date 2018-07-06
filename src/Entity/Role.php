@@ -17,7 +17,7 @@ class Role
     private $id;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", unique=true)
      */
     private $name;
 
@@ -27,6 +27,10 @@ class Role
     private $description;
 
     public function getName() {
+        return $this->name;
+    }
+
+    public function getDescription() {
         return $this->name;
     }
 }
