@@ -1,0 +1,142 @@
+<?php
+
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
+ */
+class Customer
+{
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=256)
+     */
+    private $name;
+
+    /**
+     * @ORM\Column(type="string", length=5, nullable=true)
+     */
+    private $postcode;
+
+    /**
+     * @ORM\Column(type="string", length=128, nullable=true)
+     */
+    private $city;
+
+    /**
+     * @ORM\Column(type="string", length=128, nullable=true)
+     */
+    private $address;
+
+    /**
+     * @ORM\Column(type="string", length=64, nullable=true)
+     */
+    private $contactPerson;
+
+    /**
+     * @ORM\Column(type="string", length=64, nullable=true)
+     */
+    private $mail;
+
+    /**
+     * @ORM\Column(type="string", length=32, nullable=true)
+     */
+    private $phone;
+
+    /**
+     * @ORM\Column(type="string", length=32, nullable=true)
+     */
+    private $fax;
+
+    public function getId() {
+        return $this->id;
+    }
+
+    public function getName(): ?string {
+        return $this->name;
+    }
+
+    public function setName(string $name): self {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getPostcode(): ?string {
+        return $this->postcode;
+    }
+
+    public function setPostcode(?string $postcode): self {
+        $this->postcode = $postcode;
+
+        return $this;
+    }
+
+    public function getCity(): ?string {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): self {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string {
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): self {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getContactPerson(): ?string {
+        return $this->contactPerson;
+    }
+
+    public function setContactPerson(?string $contactPerson): self {
+        $this->contactPerson = $contactPerson;
+
+        return $this;
+    }
+
+    public function getMail(): ?string {
+        return $this->mail;
+    }
+
+    public function setMail(?string $mail): self {
+        $this->mail = $mail;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): self {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getFax(): ?string {
+        return $this->fax;
+    }
+
+    public function setFax(?string $fax): self {
+        $this->fax = $fax;
+
+        return $this;
+    }
+}
