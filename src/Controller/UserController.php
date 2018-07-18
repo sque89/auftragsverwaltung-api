@@ -16,6 +16,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
 class UserController extends Controller {
+
     private $entityManager;
     private $encoder;
     private $serializer;
@@ -29,11 +30,24 @@ class UserController extends Controller {
         $this->serializer = new Serializer(array($normalizer), array(new JsonEncoder()));
     }
 
-    private function changeCommonData($username, $data) {
+    private function parseRolesFromRequest($requestData) {
+        $parsedRoles = [];
+        foreach ($requestData["roles"] as $role) {
+            $parsedRoles[] = $this->entityManager->getRepository(Role::class)->findOneByName($role);
+        }
+        return $parsedRoles;
+    }
+
+    private function changeCommonData($username, $data, $changeRoles = false) {
         $user = $this->entityManager->getRepository(User::class)->findOneByUsername($username);
         $user->setFirstname($data['firstname']);
         $user->setLastname($data['lastname']);
         $user->setEmail($data['email']);
+
+        if ($changeRoles) {
+            $user->setRoles($this->parseRolesFromRequest($data));
+        }
+
         $this->entityManager->flush();
         return $user;
     }
@@ -116,28 +130,6 @@ class UserController extends Controller {
     }
 
     /**
-     * @Route("/api/user/roles/{username}", name="changeRolesByUsername", methods="POST")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
-    public function changeRolesByUsername(Request $request, $username) {
-        try {
-            $rolesToSet = [];
-            $requestData = json_decode($request->getContent(), true);
-            foreach($requestData as $role) {
-                $rolesToSet[] = $this->entityManager->getRepository(Role::class)->findOneByName($role);
-            }
-            $user = $this->entityManager->getRepository(User::class)->findOneByUsername($username);
-            $user->setRoles($rolesToSet);
-            $this->entityManager->flush();
-            return new Response(
-                    $this->serializer->serialize($user, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
-            );
-        } catch (Exception $ex) {
-            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
-        }
-    }
-
-    /**
      * @Route("/api/users", name="getAllUsers", methods="GET")
      * @Security("has_role('ROLE_ADMIN')")
      */
@@ -153,11 +145,35 @@ class UserController extends Controller {
     }
 
     /**
+     * @Route("/api/user", name="addUser", methods="PUT")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+    public function addUser(Request $request) {
+        try {
+            $requestData = json_decode($request->getContent(), true);
+            $newUser = new User();
+            $newUser->setFirstname($requestData['firstname']);
+            $newUser->setLastname($requestData['lastname']);
+            $newUser->setEmail($requestData['email']);
+            $newUser->setUsername($requestData['username']);
+            $newUser->setRoles($this->parseRolesFromRequest($requestData));
+            $newUser->setPassword($this->encoder->encodePassword($newUser, $requestData['password']));
+            $this->entityManager->persist($newUser);
+            $this->entityManager->flush();
+            return new Response(
+                    $this->serializer->serialize($newUser, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
+            );
+        } catch (Exception $ex) {
+            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
+        }
+    }
+
+    /**
      * @Route("/api/user/commondata", name="changeCommonDataForLoggedInUser", methods="POST")
      */
     public function changeCommonDataForLoggedInUser(Request $request) {
         try {
-            $changedUser = $this->changeCommonData($this->getUser()->getUsername(), json_decode($request->getContent(), true));
+            $changedUser = $this->changeCommonData(json_decode($this->getUser()->getUsername(), $request->getContent(), true));
             return new Response(
                     $this->serializer->serialize($changedUser, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
             );
@@ -172,7 +188,7 @@ class UserController extends Controller {
      */
     public function changeCommonDataByUsername(Request $request, $username) {
         try {
-            $changedUser = $this->changeCommonData($username, json_decode($request->getContent(), true));
+            $changedUser = $this->changeCommonData($username, json_decode($request->getContent(), true), true);
             return new Response(
                     $this->serializer->serialize($changedUser, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
             );
