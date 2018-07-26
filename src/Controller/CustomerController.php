@@ -60,10 +60,43 @@ class CustomerController extends Controller {
         try {
             $requestData = json_decode($request->getContent(), true);
             $customer = $this->entityManager->getRepository(Customer::class)->findOneById($id);
-            $customer->setName($requestData["name"]);
+            $customer->setName($requestData['name']);
+            $customer->setPostcode($requestData['postcode']);
+            $customer->setCity($requestData['city']);
+            $customer->setAddress($requestData['address']);
+            $customer->setContactPerson($requestData['contactPerson']);
+            $customer->setMail($requestData['mail']);
+            $customer->setPhone($requestData['phone']);
+            $customer->setFax($requestData['fax']);
             $this->entityManager->flush();
             return new Response(
                     $this->serializer->serialize($customer, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
+            );
+        } catch (Exception $ex) {
+            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
+        }
+    }
+
+    /**
+     * @Route("/api/customer", name="addCustomer", methods="PUT")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+    public function addCustomer(Request $request) {
+        try {
+            $requestData = json_decode($request->getContent(), true);
+            $newCustomer = new Customer();
+            $newCustomer->setName($requestData['name']);
+            $newCustomer->setPostcode($requestData['postcode']);
+            $newCustomer->setCity($requestData['city']);
+            $newCustomer->setAddress($requestData['address']);
+            $newCustomer->setContactPerson($requestData['contactPerson']);
+            $newCustomer->setMail($requestData['mail']);
+            $newCustomer->setPhone($requestData['phone']);
+            $newCustomer->setFax($requestData['fax']);
+            $this->entityManager->persist($newCustomer);
+            $this->entityManager->flush();
+            return new Response(
+                    $this->serializer->serialize($newCustomer, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
             );
         } catch (Exception $ex) {
             return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
