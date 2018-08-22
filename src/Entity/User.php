@@ -55,7 +55,14 @@ class User implements UserInterface, \Serializable {
      */
     private $roles;
 
+    /**
+     * Many Users have Many Jobs.
+     * @ORM\ManyToMany(targetEntity="Job", mappedBy="arrangers")
+     */
+    private $jobs;
+
     public function __construct() {
+        $this->jobs = new \Doctrine\Common\Collections\ArrayCollection();
         $this->isActive = true;
         // may not be needed, see section on salt below
         // $this->salt = md5(uniqid('', true));

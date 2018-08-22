@@ -8,16 +8,14 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20180701180457 extends AbstractMigration
+final class Version20180816223414 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE user ADD firstname VARCHAR(50) NOT NULL, ADD lastname VARCHAR(50) NOT NULL');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D64983A00E68 ON user (firstname)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D6493124B5B6 ON user (lastname)');
+        $this->addSql('ALTER TABLE job CHANGE date_deadline date_deadline DATE NOT NULL');
     }
 
     public function down(Schema $schema) : void
@@ -25,8 +23,6 @@ final class Version20180701180457 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP INDEX UNIQ_8D93D64983A00E68 ON user');
-        $this->addSql('DROP INDEX UNIQ_8D93D6493124B5B6 ON user');
-        $this->addSql('ALTER TABLE user DROP firstname, DROP lastname');
+        $this->addSql('ALTER TABLE job CHANGE date_deadline date_deadline DATETIME NOT NULL');
     }
 }
