@@ -173,7 +173,7 @@ class UserController extends Controller {
      */
     public function changeCommonDataForLoggedInUser(Request $request) {
         try {
-            $changedUser = $this->changeCommonData(json_decode($this->getUser()->getUsername(), $request->getContent(), true));
+            $changedUser = $this->changeCommonData($this->getUser()->getUsername(), json_decode($request->getContent(), true), false);
             return new Response(
                     $this->serializer->serialize($changedUser, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
             );

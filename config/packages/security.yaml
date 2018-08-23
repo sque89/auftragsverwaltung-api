@@ -1,5 +1,4 @@
 security:
-    # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     encoders:
         App\Entity\User:
             algorithm: bcrypt
@@ -13,15 +12,16 @@ security:
             pattern:  ^/api/login
             stateless: true
             anonymous: true
+            user_checker: App\Security\LoginUserChecker
             json_login:
                 check_path:               /api/login_check
                 success_handler:          lexik_jwt_authentication.handler.authentication_success
                 failure_handler:          lexik_jwt_authentication.handler.authentication_failure
                 require_previous_session: false
-
         api:
             pattern:   ^/api
             stateless: true
+            user_checker: App\Security\LoginUserChecker
             guard:
                 authenticators:
                     - lexik_jwt_authentication.jwt_token_authenticator
