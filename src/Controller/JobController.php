@@ -48,7 +48,25 @@ class JobController extends Controller {
         try {
             $jobs = $this->entityManager->getRepository(Job::class)->findAll();
             return new Response(
-                    $this->serializer->serialize(array("jobs" => $jobs), 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
+                    $this->serializer->serialize($jobs, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
+            );
+        } catch (Exception $ex) {
+            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
+        }
+    }
+
+    /**
+     * @Route("/api/jobs/{from}/{to}", name="getJobsInTimespan", methods="GET")
+     */
+    public function getJobsInTimespan($from, $to) {
+        try {
+
+            $jobs = $this->entityManager->getRepository(Job::class)->findByTimespan(
+                new \DateTime("@$from"),
+                new \DateTime("@$to")
+            );
+            return new Response(
+                    $this->serializer->serialize($jobs, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
             );
         } catch (Exception $ex) {
             return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
