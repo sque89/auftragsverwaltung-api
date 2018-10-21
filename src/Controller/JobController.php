@@ -74,6 +74,21 @@ class JobController extends Controller {
     }
 
     /**
+     * @Route("/api/job/{id}", name="getJobById", methods="GET")
+     */
+    public function getJobById($id) {
+        try {
+
+            $job = $this->entityManager->getRepository(Job::class)->findOneById($id);
+            return new Response(
+                    $this->serializer->serialize($job, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
+            );
+        } catch (Exception $ex) {
+            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
+        }
+    }
+
+    /**
      * @Route("/api/job", name="createJob", methods="POST")
      */
     public function createJob(Request $request) {
