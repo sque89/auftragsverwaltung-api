@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Table(name="user")
@@ -15,11 +16,13 @@ class User implements UserInterface, \Serializable {
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"api", "unsensitive"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=25, unique=true)
+     * @Groups({"api", "unsensitive"})
      */
     private $username;
 
@@ -30,28 +33,33 @@ class User implements UserInterface, \Serializable {
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Groups({"api", "unsensitive"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Groups({"api", "unsensitive"})
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=60, unique=true)
+     * @Groups({"api"})
      */
     private $email;
 
     /**
      * @ORM\Column(name="is_active", type="boolean")
+     * @Groups({"api", "unsensitive"})
      */
     private $isActive;
 
     /**
-     * One User has Many Roles.
+     * Many Users have Many Roles.
      * @ORM\ManyToMany(targetEntity="Role")
      * @ORM\JoinColumn(referencedColumnName="id")
+     * @Groups({"api"})
      */
     private $roles;
 

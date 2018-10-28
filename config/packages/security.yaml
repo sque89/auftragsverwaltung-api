@@ -21,6 +21,9 @@ security:
         settings:
             pattern:  ^/api/settings
             security: false
+        deliveryTypes:
+            pattern:  ^/api/delivery-types
+            security: false
         api:
             pattern:   ^/api
             stateless: true

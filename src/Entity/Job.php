@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use \Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\JobRepository")
@@ -15,57 +16,74 @@ class Job
     /**
      * @ORM\Id()
      * @ORM\Column(type="string", length=16)
+     * @Groups({"api"})
      */
     private $id;
 
     /**
-     * @ORM\Column(type="date_immutable")
+     * @ORM\Column(type="date")
+     * @Groups({"api"})
      */
     private $dateIncoming;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups({"api"})
      */
     private $dateDeadline;
 
     /**
-     * @ORM\Column(type="smallint")
+     * @ORM\ManyToOne(targetEntity="DeliveryType")
+     * @Groups({"api"})
      */
     private $deliveryType;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Customer")
+     * @Groups({"api"})
+     */
+    private $customer;
+
+    /**
      * @ORM\Column(type="text")
+     * @Groups({"api"})
      */
     private $description;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Groups({"api"})
      */
     private $notes;
 
     /**
      * @ORM\Column(type="text", nullable=true)
+     * @Groups({"api"})
      */
     private $externalPurchase;
 
     /**
      * @ORM\Column(type="string", length=16, nullable=true)
+     * @Groups({"api"})
      */
     private $invoiceNumber;
 
     /**
      * Many Jobs have Many Arrangers.
      * @ORM\ManyToMany(targetEntity="User", inversedBy="jobs")
+     * @Groups({"api"})
      */
     private $arrangers;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"api"})
      */
     private $createdAt;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"api"})
      */
     private $updatedAt;
 
@@ -82,11 +100,11 @@ class Job
         return $this->id;
     }
 
-    public function getDateIncoming(): ?\DateTimeImmutable {
+    public function getDateIncoming(): ?\DateTime {
         return $this->dateIncoming;
     }
 
-    public function setDateIncoming(\DateTimeImmutable $dateIncoming): self {
+    public function setDateIncoming(\DateTime $dateIncoming): self {
         $this->dateIncoming = $dateIncoming;
 
         return $this;
@@ -102,12 +120,22 @@ class Job
         return $this;
     }
 
-    public function getDeliveryType(): ?int {
+    public function getDeliveryType(): ?DeliveryType {
         return $this->deliveryType;
     }
 
-    public function setDeliveryType(int $deliveryType): self {
+    public function setDeliveryType(DeliveryType $deliveryType): self {
         $this->deliveryType = $deliveryType;
+
+        return $this;
+    }
+
+    public function getCustomer(): ?Customer {
+        return $this->customer;
+    }
+
+    public function setCustomer(Customer $customer): self {
+        $this->customer = $customer;
 
         return $this;
     }

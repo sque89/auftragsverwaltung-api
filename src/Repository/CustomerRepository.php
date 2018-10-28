@@ -14,37 +14,17 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class CustomerRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
-    {
+    public function __construct(RegistryInterface $registry) {
         parent::__construct($registry, Customer::class);
     }
 
-//    /**
-//     * @return Customer[] Returns an array of Customer objects
-//     */
-    /*
-    public function findByExampleField($value)
-    {
+    public function findBySearchString($searchString) {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
+            ->orderBy('c.name', 'ASC')
+            ->where('LOWER(c.name) LIKE :searchString')
+            ->orWhere('LOWER(c.contactPerson) LIKE :searchString')
+            ->setParameter('searchString', '%' . strtolower($searchString) . '%')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Customer
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

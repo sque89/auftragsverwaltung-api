@@ -31,7 +31,7 @@ class CustomerController extends Controller {
         try {
             $customers = $this->entityManager->getRepository(Customer::class)->findAll();
             return new Response(
-                    $this->serializer->serialize(array('customers' => $customers), 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
+                    $this->serializer->serialize($customers, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
             );
         } catch (Exception $ex) {
             return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
@@ -44,6 +44,20 @@ class CustomerController extends Controller {
     public function getCustomerById($id) {
         try {
             $customer = $this->entityManager->getRepository(Customer::class)->findOneById($id);
+            return new Response(
+                    $this->serializer->serialize($customer, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
+            );
+        } catch (Exception $ex) {
+            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
+        }
+    }
+
+    /**
+     * @Route("/api/customer/find/{searchString}", name="getCustomersBySearchString", methods="GET")
+     */
+    public function getCustomersBySearchString($searchString) {
+        try {
+            $customer = $this->entityManager->getRepository(Customer::class)->findBySearchString($searchString);
             return new Response(
                     $this->serializer->serialize($customer, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
             );

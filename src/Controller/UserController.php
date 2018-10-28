@@ -137,7 +137,21 @@ class UserController extends Controller {
         try {
             $users = $this->entityManager->getRepository(User::class)->findAll();
             return new Response(
-                    $this->serializer->serialize(array('users' => $users), 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
+                    $this->serializer->serialize($users, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
+            );
+        } catch (Exception $ex) {
+            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
+        }
+    }
+
+    /**
+     * @Route("/api/users/unsensitive", name="getAllUsersUnsensitive", methods="GET")
+     */
+    public function getAllUsersUnsensitive() {
+        try {
+            $users = $this->entityManager->getRepository(User::class)->findAll();
+            return new Response(
+                    $this->serializer->serialize($users, 'json', ['groups' => ['unsensitive']]), Response::HTTP_OK, ['Content-type' => 'application/json']
             );
         } catch (Exception $ex) {
             return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
