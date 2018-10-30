@@ -76,6 +76,13 @@ class Job
     private $arrangers;
 
     /**
+     * One Job has Many Tasks.
+     * @ORM\OneToMany(targetEntity="Task", mappedBy="job")
+     * @Groups({"api"})
+     */
+    private $tasks;
+
+    /**
      * @ORM\Column(type="datetime_immutable")
      * @Groups({"api"})
      */
@@ -89,6 +96,7 @@ class Job
 
     public function __construct() {
         $this->arrangers = new ArrayCollection();
+        $this->tasks = new ArrayCollection();
     }
 
     public function setId(String $id): self {
@@ -183,6 +191,10 @@ class Job
         $this->arrangers = $arrangers;
     }
 
+    public function getArrangers(): Collection {
+        return $this->arrangers;
+    }
+
     public function addArranger(User $arranger): self {
         $this->arrangers->add($arranger);
         return $this;
@@ -206,8 +218,12 @@ class Job
         }
     }
 
-    public function getArrangers(): Collection {
-        return $this->arrangers;
+    public function setTasks(ArrayCollection $tasks): self {
+        $this->tasks = $tasks;
+    }
+
+    public function getTasks(): Collection {
+        return $this->tasks;
     }
 
     public function setCreatedAt(\DateTimeImmutable $createdAt): self {

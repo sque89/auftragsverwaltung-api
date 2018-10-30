@@ -28,7 +28,10 @@ class JobController extends Controller {
 
     public function __construct(EntityManagerInterface $entityManager, JobService $jobService) {
         $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $normalizer = array( new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory));
+        $normalizer = array(new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory));
+        $normalizer[1]->setCircularReferenceHandler(function ($object) {
+            return $object->getId();
+        });
         $this->jobService = $jobService;
         $this->entityManager = $entityManager;
         $this->serializer = new Serializer($normalizer, array(new JsonEncoder()));
@@ -43,8 +46,9 @@ class JobController extends Controller {
         $job->setNotes($data["notes"]);
         $job->setExternalPurchase($data["externalPurchase"]);
         $job->updateArrangers(array_map(
-            function($arranger) { return $this->entityManager->getRepository(User::class)->findOneById($arranger["id"]); },
-            $data["arrangers"]
+                        function($arranger) {
+                    return $this->entityManager->getRepository(User::class)->findOneById($arranger["id"]);
+                }, $data["arrangers"]
         ));
     }
 
@@ -69,8 +73,7 @@ class JobController extends Controller {
         try {
 
             $jobs = $this->entityManager->getRepository(Job::class)->findByTimespan(
-                new \DateTime("@$from"),
-                new \DateTime("@$to")
+                    new \DateTime("@$from"), new \DateTime("@$to")
             );
             return new Response(
                     $this->serializer->serialize($jobs, 'json', ['groups' => ['api']]), Response::HTTP_OK, ['Content-type' => 'application/json']
@@ -131,4 +134,5 @@ class JobController extends Controller {
             return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
         }
     }
+
 }
