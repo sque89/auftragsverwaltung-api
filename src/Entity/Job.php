@@ -34,12 +34,14 @@ class Job
 
     /**
      * @ORM\ManyToOne(targetEntity="DeliveryType")
+     * @ORM\JoinColumn(nullable=false)
      * @Groups({"api"})
      */
     private $deliveryType;
 
     /**
      * @ORM\ManyToOne(targetEntity="Customer")
+     * @ORM\JoinColumn(nullable=false)
      * @Groups({"api"})
      */
     private $customer;
@@ -89,7 +91,7 @@ class Job
     private $createdAt;
 
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime_immutable")
      * @Groups({"api"})
      */
     private $updatedAt;
@@ -235,12 +237,12 @@ class Job
         return $this->createdAt;
     }
 
-    public function setUpdatedAt(\DateTime $updatedAt): self {
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): self {
         $this->updatedAt = $updatedAt;
         return $this;
     }
 
-    public function getUpdatedAt(): \DateTime {
+    public function getUpdatedAt(): \DateTimeImmutable {
         return $this->updatedAt;
     }
 
@@ -249,7 +251,7 @@ class Job
      * @ORM\PreUpdate
      */
     public function updatedTimestamps() {
-        $this->setUpdatedAt(new \DateTime('now'));
+        $this->setUpdatedAt(new \DateTimeImmutable('now'));
 
         if ($this->getCreatedAt() == null) {
             $this->setCreatedAt(new \DateTimeImmutable('now'));
