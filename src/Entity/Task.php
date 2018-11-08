@@ -7,6 +7,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TaskRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Task
 {
@@ -31,13 +32,21 @@ class Task
     private $description;
 
     /**
+     * @ORM\Column(type="date")
+     * @Groups({"api"})
+     */
+    private $date;
+
+    /**
      * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(nullable=false)
      * @Groups({"api"})
      */
     private $arranger;
 
     /**
      * @ORM\ManyToOne(targetEntity="Job")
+     * @ORM\JoinColumn(nullable=false)
      * @Groups({"api"})
      */
     private $job;
@@ -74,6 +83,16 @@ class Task
 
     public function setDescription(string $description): self {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTime {
+        return $this->date;
+    }
+
+    public function setDate(\DateTime $date): self {
+        $this->date = $date;
 
         return $this;
     }
@@ -118,7 +137,7 @@ class Task
      * @ORM\PrePersist
      * @ORM\PreUpdate
      */
-    public function updatedTimestamps() {
+    public function updateTimestamps() {
         $this->setUpdatedAt(new \DateTimeImmutable('now'));
 
         if ($this->getCreatedAt() == null) {

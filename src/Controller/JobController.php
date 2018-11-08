@@ -103,7 +103,6 @@ class JobController extends Controller {
      */
     public function createJob(Request $request) {
         try {
-            echo $this->jobService->generateJobId();
             $requestData = json_decode($request->getContent(), true);
             $job = new Job();
             $job->setId($this->jobService->generateJobId());
