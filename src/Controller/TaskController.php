@@ -64,16 +64,23 @@ class TaskController extends Controller {
     public function changeTaskForLoggedInUser($taskId, Request $request) {
         try {
             $requestData = json_decode($request->getContent(), true);
-            $task = $this->entityManager->getRepository(Task::class)->findOneById($taskId);
-            $task->setWorkingTime($requestData['workingTime']);
-            $task->setDescription($requestData['description']);
-            $task->setDate(new \DateTime($requestData['date']));
-            $task->setArranger($this->entityManager->getRepository(User::class)->findOneByUsername($this->getUser()->getUsername()));
-            $this->entityManager->flush();
-            return new Response(
-                    $this->serializer->serialize($task, 'json', ['groups' => ['api']]), Response::HTTP_OK, ['Content-type' => 'application/json']
-            );
-        } catch (Exception $ex) {
+            $task = $this->entityManager->getRepository(Task::class)->find($taskId, \Doctrine\DBAL\LockMode::OPTIMISTIC, $requestData['version']);
+
+            if ($task->getArranger()->getId() === $this->getUser()->getId()) {
+                $task->setWorkingTime($requestData['workingTime']);
+                $task->setDescription($requestData['description']);
+                $task->setDate(new \DateTime($requestData['date']));
+                $task->setArranger($this->entityManager->getRepository(User::class)->findOneByUsername($this->getUser()->getUsername()));
+                $this->entityManager->flush();
+                return new Response(
+                        $this->serializer->serialize($task, 'json', ['groups' => ['api']]), Response::HTTP_OK, ['Content-type' => 'application/json']
+                );
+            } else {
+                return $this->json(array('code' => 403, 'message' => 'Not allowed to change task from another user'), 403);
+            }
+        } catch(\Doctrine\ORM\OptimisticLockException $ole) {
+            return $this->json(array('code' => 423, 'message' => $ole->getMessage()), 423);
+        } catch (\Exception $ex) {
             return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
         }
     }

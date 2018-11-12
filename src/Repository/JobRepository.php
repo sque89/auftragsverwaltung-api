@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Job;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -37,4 +38,14 @@ class JobRepository extends ServiceEntityRepository {
                         ->getResult();
     }
 
+    public function findOpenJobsForUser(User $user) {
+        return $this->createQueryBuilder('j')
+            ->orderBy('j.id', 'DESC')
+            ->join('j.arrangers', 'user')
+            ->where(':user MEMBER OF j.arrangers')
+            ->andWhere('j.invoiceNumber IS NULL')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->getResult();
+    }
 }

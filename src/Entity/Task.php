@@ -63,6 +63,12 @@ class Task
      */
     private $updatedAt;
 
+    /**
+     * @ORM\Version @ORM\Column(type="integer")
+     * @Groups({"api"})
+     */
+    private $version;
+
     public function getId() {
         return $this->id;
     }
@@ -131,6 +137,15 @@ class Task
 
     public function getUpdatedAt(): \DateTimeImmutable {
         return $this->updatedAt;
+    }
+
+    public function setVersion(int $version): self {
+        $this->version = $version;
+        return $this;
+    }
+
+    public function getVersion(): int {
+        return $this->version;
     }
 
     /**

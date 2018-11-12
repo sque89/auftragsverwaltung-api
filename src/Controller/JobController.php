@@ -45,6 +45,7 @@ class JobController extends Controller {
         $job->setDescription($data["description"]);
         $job->setNotes($data["notes"]);
         $job->setExternalPurchase($data["externalPurchase"]);
+        $job->setInvoiceNumber($data["invoiceNumber"]);
         $job->updateArrangers(array_map(
                         function($arranger) {
                     return $this->entityManager->getRepository(User::class)->findOneById($arranger["id"]);
@@ -75,6 +76,20 @@ class JobController extends Controller {
             $jobs = $this->entityManager->getRepository(Job::class)->findByTimespan(
                     new \DateTime("@$from"), new \DateTime("@$to")
             );
+            return new Response(
+                    $this->serializer->serialize($jobs, 'json', ['groups' => ['api']]), Response::HTTP_OK, ['Content-type' => 'application/json']
+            );
+        } catch (Exception $ex) {
+            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
+        }
+    }
+
+    /**
+     * @Route("/api/jobs/open", name="getOpenJobsForLoggedInUser", methods="GET")
+     */
+    public function getOpenJobsForLoggedInUser() {
+        try {
+            $jobs = $this->entityManager->getRepository(Job::class)->findOpenJobsForUser($this->getUser());
             return new Response(
                     $this->serializer->serialize($jobs, 'json', ['groups' => ['api']]), Response::HTTP_OK, ['Content-type' => 'application/json']
             );
@@ -123,13 +138,15 @@ class JobController extends Controller {
     public function updateJob($id, Request $request) {
         try {
             $requestData = json_decode($request->getContent(), true);
-            $job = $this->entityManager->getRepository(Job::class)->findOneById($id);
+            $job = $this->entityManager->getRepository(Job::class)->find($id, \Doctrine\DBAL\LockMode::OPTIMISTIC, $requestData['version']);
             $this->setJobData($job, $requestData);
             $this->entityManager->flush();
             return new Response(
                     $this->serializer->serialize($job, 'json', ['groups' => ['api']]), Response::HTTP_OK, ['Content-type' => 'application/json']
             );
-        } catch (Exception $ex) {
+        } catch(\Doctrine\ORM\OptimisticLockException $ole) {
+            return $this->json(array('code' => 423, 'message' => $ole->getMessage()), 423);
+        } catch (\Exception $ex) {
             return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
         }
     }

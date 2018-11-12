@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use \Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -95,6 +95,12 @@ class Job
      * @Groups({"api"})
      */
     private $updatedAt;
+
+    /**
+     * @ORM\Version @ORM\Column(type="integer")
+     * @Groups({"api"})
+     */
+    private $version;
 
     public function __construct() {
         $this->arrangers = new ArrayCollection();
@@ -244,6 +250,15 @@ class Job
 
     public function getUpdatedAt(): \DateTimeImmutable {
         return $this->updatedAt;
+    }
+
+    public function setVersion(int $version): self {
+        $this->version = $version;
+        return $this;
+    }
+
+    public function getVersion(): int {
+        return $this->version;
     }
 
     /**
