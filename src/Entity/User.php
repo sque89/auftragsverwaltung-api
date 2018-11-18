@@ -151,7 +151,10 @@ class User implements UserInterface, \Serializable {
     }
 
     public function eraseCredentials() {
+    }
 
+    public function isAdministrator() {
+        return is_integer(array_search('ROLE_ADMIN', $this->getRoles()));
     }
 
     /** @see \Serializable::serialize() */

@@ -48,4 +48,30 @@ class JobRepository extends ServiceEntityRepository {
             ->getQuery()
             ->getResult();
     }
+
+    public function getOpenJobCount() {
+        return (int) $this->createQueryBuilder('j')
+            ->select('count(j.id)')
+            ->where('j.invoiceNumber IS NULL')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getOpenJobOverdueCount() {
+        return (int) $this->createQueryBuilder('j')
+            ->select('count(j.id)')
+            ->where('j.invoiceNumber IS NULL')
+            ->andWhere('j.dateDeadline > CURRENT_TIMESTAMP()')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getOpenJobIntimeCount() {
+        return (int) $this->createQueryBuilder('j')
+            ->select('count(j.id)')
+            ->where('j.invoiceNumber IS NULL')
+            ->andWhere('j.dateDeadline <= CURRENT_TIMESTAMP()')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

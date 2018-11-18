@@ -27,7 +27,7 @@ class Job
     private $dateIncoming;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date", nullable=true)
      * @Groups({"api"})
      */
     private $dateDeadline;

@@ -19,6 +19,7 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class JobController extends Controller {
 
@@ -68,7 +69,7 @@ class JobController extends Controller {
     }
 
     /**
-     * @Route("/api/jobs/{from}/{to}", name="getJobsInTimespan", methods="GET")
+     * @Route("/api/jobs/timespan/{from}/{to}", name="getJobsInTimespan", methods="GET")
      */
     public function getJobsInTimespan($from, $to) {
         try {
@@ -85,13 +86,55 @@ class JobController extends Controller {
     }
 
     /**
-     * @Route("/api/jobs/open", name="getOpenJobsForLoggedInUser", methods="GET")
+     * @Route("/api/jobs/open/current-user", name="getOpenJobsForLoggedInUser", methods="GET")
      */
     public function getOpenJobsForLoggedInUser() {
         try {
             $jobs = $this->entityManager->getRepository(Job::class)->findOpenJobsForUser($this->getUser());
             return new Response(
                     $this->serializer->serialize($jobs, 'json', ['groups' => ['api']]), Response::HTTP_OK, ['Content-type' => 'application/json']
+            );
+        } catch (Exception $ex) {
+            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
+        }
+    }
+
+    /**
+     * @Route("/api/jobs/open/count", name="getOpenJobsCount", methods="GET")
+     */
+    public function getOpenJobsCount() {
+        try {
+            $count = $this->entityManager->getRepository(Job::class)->getOpenJobCount();
+            return new Response(
+                    $this->serializer->serialize($count, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
+            );
+        } catch (Exception $ex) {
+            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
+        }
+    }
+
+    /**
+     * @Route("/api/jobs/open/intime/count", name="getOpenJobsIntimeCount", methods="GET")
+     */
+    public function getOpenJobsIntimeCount() {
+        try {
+            $count = $this->entityManager->getRepository(Job::class)->getOpenJobIntimeCount();
+            return new Response(
+                    $this->serializer->serialize($count, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
+            );
+        } catch (Exception $ex) {
+            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
+        }
+    }
+
+    /**
+     * @Route("/api/jobs/open/overdue/count", name="getOpenJobsOverdueCount", methods="GET")
+     */
+    public function getOpenJobsOverdueCount() {
+        try {
+            $count = $this->entityManager->getRepository(Job::class)->getOpenJobOverdueCount();
+            return new Response(
+                    $this->serializer->serialize($count, 'json'), Response::HTTP_OK, ['Content-type' => 'application/json']
             );
         } catch (Exception $ex) {
             return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
@@ -139,12 +182,37 @@ class JobController extends Controller {
         try {
             $requestData = json_decode($request->getContent(), true);
             $job = $this->entityManager->getRepository(Job::class)->find($id, \Doctrine\DBAL\LockMode::OPTIMISTIC, $requestData['version']);
+
+            if ($job->getInvoiceNumber() !== NULL && !$this->getUser()->isAdministrator()) {
+                return $this->json(array('code' => 403, 'message' => 'Not allowed to change closed Job if not Administrator'), 403);
+            }
+
             $this->setJobData($job, $requestData);
             $this->entityManager->flush();
             return new Response(
                     $this->serializer->serialize($job, 'json', ['groups' => ['api']]), Response::HTTP_OK, ['Content-type' => 'application/json']
             );
-        } catch(\Doctrine\ORM\OptimisticLockException $ole) {
+        } catch (\Doctrine\ORM\OptimisticLockException $ole) {
+            return $this->json(array('code' => 423, 'message' => $ole->getMessage()), 423);
+        } catch (\Exception $ex) {
+            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
+        }
+    }
+
+    /**
+     * @Route("/api/job/{id}/invoice", name="setInvoiceNumber", methods="POST")
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+    public function setInvoiceNumber($id, Request $request) {
+        try {
+            $requestData = json_decode($request->getContent(), true);
+            $job = $this->entityManager->getRepository(Job::class)->find($id, \Doctrine\DBAL\LockMode::OPTIMISTIC, $requestData['job']['version']);
+            $job->setInvoiceNumber($requestData["invoiceNumber"]);
+            $this->entityManager->flush();
+            return new Response(
+                    $this->serializer->serialize($job, 'json', ['groups' => ['api']]), Response::HTTP_OK, ['Content-type' => 'application/json']
+            );
+        } catch (\Doctrine\ORM\OptimisticLockException $ole) {
             return $this->json(array('code' => 423, 'message' => $ole->getMessage()), 423);
         } catch (\Exception $ex) {
             return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
