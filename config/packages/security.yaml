@@ -24,6 +24,9 @@ security:
         deliveryTypes:
             pattern:  ^/api/delivery-types
             security: false
+        customerImport:
+            pattern:  ^/api/customers/import
+            security: false
         api:
             pattern:   ^/api
             stateless: true

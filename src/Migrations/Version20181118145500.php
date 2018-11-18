@@ -8,14 +8,14 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20181116132127 extends AbstractMigration
+final class Version20181118145500 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE TABLE customer (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(256) NOT NULL, postcode VARCHAR(5) DEFAULT NULL, city VARCHAR(128) DEFAULT NULL, address VARCHAR(128) DEFAULT NULL, contact_person VARCHAR(64) DEFAULT NULL, mail VARCHAR(64) DEFAULT NULL, phone VARCHAR(32) DEFAULT NULL, fax VARCHAR(32) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE customer (id INT NOT NULL, name VARCHAR(256) NOT NULL, postcode VARCHAR(5) DEFAULT NULL, city VARCHAR(128) DEFAULT NULL, address VARCHAR(128) DEFAULT NULL, contact_person VARCHAR(64) DEFAULT NULL, mail VARCHAR(64) DEFAULT NULL, phone VARCHAR(32) DEFAULT NULL, fax VARCHAR(32) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE delivery_type (id INT AUTO_INCREMENT NOT NULL, label VARCHAR(64) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE job (id VARCHAR(16) NOT NULL, delivery_type_id INT NOT NULL, customer_id INT NOT NULL, date_incoming DATE NOT NULL, date_deadline DATE DEFAULT NULL, description LONGTEXT NOT NULL, notes LONGTEXT DEFAULT NULL, external_purchase LONGTEXT DEFAULT NULL, invoice_number VARCHAR(16) DEFAULT NULL, created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', updated_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', version INT DEFAULT 1 NOT NULL, INDEX IDX_FBD8E0F8CF52334D (delivery_type_id), INDEX IDX_FBD8E0F89395C3F3 (customer_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE job_user (job_id VARCHAR(16) NOT NULL, user_id INT NOT NULL, INDEX IDX_A5FA008BE04EA9 (job_id), INDEX IDX_A5FA008A76ED395 (user_id), PRIMARY KEY(job_id, user_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');

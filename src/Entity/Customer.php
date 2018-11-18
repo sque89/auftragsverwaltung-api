@@ -12,7 +12,6 @@ class Customer
 {
     /**
      * @ORM\Id()
-     * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      * @Groups({"api"})
      */
@@ -68,6 +67,11 @@ class Customer
 
     public function getId() {
         return $this->id;
+    }
+
+    public function setId(int $id): self {
+        $this->id = $id;
+        return $this;
     }
 
     public function getName(): ?string {
