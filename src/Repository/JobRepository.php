@@ -27,51 +27,57 @@ class JobRepository extends ServiceEntityRepository {
                         ->getOneOrNullResult();
     }
 
-    public function findByTimespan(\DateTime $from, \DateTime $to) {
-        return $this->createQueryBuilder('j')
-                        ->orderBy('j.id', 'DESC')
-                        ->where('j.dateIncoming >= :from')
-                        ->andWhere('j.dateIncoming <= :to')
-                        ->setParameter('from', $from)
-                        ->setParameter('to', $to)
-                        ->getQuery()
+    public function findByTimespan(\DateTime $from, \DateTime $to, $groupBy = null) {
+        $query = $this->createQueryBuilder('j')
+                ->orderBy('j.id', 'DESC')
+                ->where('j.dateIncoming >= :from')
+                ->andWhere('j.dateIncoming <= :to')
+                ->setParameter('from', $from)
+                ->setParameter('to', $to);
+
+        if ($groupBy) {
+            $query->select('count(j.id) as count, j.' . $groupBy)->groupBy('j.' . $groupBy);
+        }
+
+        return $query->getQuery()
                         ->getResult();
     }
 
     public function findOpenJobsForUser(User $user) {
         return $this->createQueryBuilder('j')
-            ->orderBy('j.id', 'DESC')
-            ->join('j.arrangers', 'user')
-            ->where(':user MEMBER OF j.arrangers')
-            ->andWhere('j.invoiceNumber IS NULL')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult();
+                        ->orderBy('j.id', 'DESC')
+                        ->join('j.arrangers', 'user')
+                        ->where(':user MEMBER OF j.arrangers')
+                        ->andWhere('j.invoiceNumber IS NULL')
+                        ->setParameter('user', $user)
+                        ->getQuery()
+                        ->getResult();
     }
 
     public function getOpenJobCount() {
         return (int) $this->createQueryBuilder('j')
-            ->select('count(j.id)')
-            ->where('j.invoiceNumber IS NULL')
-            ->getQuery()
-            ->getSingleScalarResult();
+                        ->select('count(j.id)')
+                        ->where('j.invoiceNumber IS NULL')
+                        ->getQuery()
+                        ->getSingleScalarResult();
     }
 
     public function getOpenJobOverdueCount() {
         return (int) $this->createQueryBuilder('j')
-            ->select('count(j.id)')
-            ->where('j.invoiceNumber IS NULL')
-            ->andWhere('j.dateDeadline > CURRENT_TIMESTAMP()')
-            ->getQuery()
-            ->getSingleScalarResult();
+                        ->select('count(j.id)')
+                        ->where('j.invoiceNumber IS NULL')
+                        ->andWhere('j.dateDeadline > CURRENT_TIMESTAMP()')
+                        ->getQuery()
+                        ->getSingleScalarResult();
     }
 
     public function getOpenJobIntimeCount() {
         return (int) $this->createQueryBuilder('j')
-            ->select('count(j.id)')
-            ->where('j.invoiceNumber IS NULL')
-            ->andWhere('j.dateDeadline <= CURRENT_TIMESTAMP()')
-            ->getQuery()
-            ->getSingleScalarResult();
+                        ->select('count(j.id)')
+                        ->where('j.invoiceNumber IS NULL')
+                        ->andWhere('j.dateDeadline <= CURRENT_TIMESTAMP()')
+                        ->getQuery()
+                        ->getSingleScalarResult();
     }
+
 }

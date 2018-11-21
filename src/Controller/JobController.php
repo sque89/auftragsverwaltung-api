@@ -86,6 +86,25 @@ class JobController extends Controller {
     }
 
     /**
+     * @Route("/api/jobs/timespan/{from}/{to}/income/count", name="getJobIncomeCountInTimespan", methods="GET")
+     */
+    public function getJobIncomeCountInTimespan($from, $to) {
+        try {
+
+            $jobs = $this->entityManager->getRepository(Job::class)->findByTimespan(
+                    new \DateTime("@$from"),
+                    new \DateTime("@$to"),
+                    'dateIncoming'
+            );
+            return new Response(
+                    $this->serializer->serialize($jobs, 'json', ['groups' => ['api']]), Response::HTTP_OK, ['Content-type' => 'application/json']
+            );
+        } catch (Exception $ex) {
+            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
+        }
+    }
+
+    /**
      * @Route("/api/jobs/open/current-user", name="getOpenJobsForLoggedInUser", methods="GET")
      */
     public function getOpenJobsForLoggedInUser() {
