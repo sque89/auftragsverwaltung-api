@@ -50,6 +50,12 @@ class User implements UserInterface, \Serializable {
     private $email;
 
     /**
+     * @ORM\Column(type="text", nullable=true)
+     * @Groups({"api"})
+     */
+    private $settings;
+
+    /**
      * @ORM\Column(name="is_active", type="boolean")
      * @Groups({"api", "unsensitive"})
      */
@@ -92,6 +98,10 @@ class User implements UserInterface, \Serializable {
         return $this->email;
     }
 
+    public function getSettings(): ?string {
+        return $this->settings;
+    }
+
     public function getIsActive() {
         return $this->isActive;
     }
@@ -110,6 +120,10 @@ class User implements UserInterface, \Serializable {
 
     public function setEmail($email) {
         $this->email = $email;
+    }
+
+    public function setSettings(string $settings) {
+        $this->settings = $settings;
     }
 
     public function setIsActive($isActive) {

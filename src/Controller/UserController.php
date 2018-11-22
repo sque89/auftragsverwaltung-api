@@ -197,6 +197,20 @@ class UserController extends Controller {
     }
 
     /**
+     * @Route("/api/user/settings", name="changeSettingsForLoggedInUser", methods="POST")
+     */
+    public function changeSettingsForLoggedInUser(Request $request) {
+        try {
+            $loggedInUser = $this->entityManager->getRepository(User::class)->findOneByUsername($this->getUser()->getUsername());
+            $loggedInUser->setSettings($request->getContent());
+            $this->entityManager->flush();
+            return $this->json(array('code' => 200, 'message' => 'Benutzerprofil gespeichert', 200));
+        } catch (Exception $ex) {
+            return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
+        }
+    }
+
+    /**
      * @Route("/api/user/commondata/{username}", name="changeCommonDataByUsername", methods="POST")
      * @Security("has_role('ROLE_ADMIN')")
      */
