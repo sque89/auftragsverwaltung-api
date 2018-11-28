@@ -130,25 +130,19 @@ class CustomerController extends Controller {
 
             foreach ($csvCustomers as $csvCustomer) {
                 $indexedCsvCustomer = array_values($csvCustomer);
-                $customerToPersist = null;
+                $indexedCsvCustomerId = intval($indexedCsvCustomer[2]);
 
-                $customerId = $indexedCsvCustomer[2] !== '' ? intval($indexedCsvCustomer[2]) : intval($indexedCsvCustomer[0]);
+                if ($indexedCsvCustomerId != 0) {
+                    $customerToPersist = null;
+                    $existingCustomer = $this->entityManager->getRepository(Customer::class)->findOneById($indexedCsvCustomerId);
 
-                $existingCustomer = $this->entityManager->getRepository(Customer::class)->findOneById($customerId);
+                    if ($existingCustomer) {
+                        $customerToPersist = $existingCustomer;
+                    } else {
+                        $customerToPersist = new Customer();
+                        $customerToPersist->setId($indexedCsvCustomerId);
+                    }
 
-                if ($existingCustomer) {
-                    $existingCustomer->setName($indexedCsvCustomer[4] !== '' ? $indexedCsvCustomer[4] : $indexedCsvCustomer[1]);
-                    $existingCustomer->setPostcode($indexedCsvCustomer[10]);
-                    $existingCustomer->setCity($indexedCsvCustomer[11]);
-                    $existingCustomer->setAddress($indexedCsvCustomer[9]);
-                    $existingCustomer->setContactPerson($indexedCsvCustomer[12]);
-                    $existingCustomer->setMail($indexedCsvCustomer[16]);
-                    $existingCustomer->setPhone($indexedCsvCustomer[13]);
-                    $existingCustomer->setFax($indexedCsvCustomer[15]);
-                    $this->entityManager->flush();
-                } else {
-                    $customerToPersist = new Customer();
-                    $customerToPersist->setId($customerId);
                     $customerToPersist->setName($indexedCsvCustomer[4] !== '' ? $indexedCsvCustomer[4] : $indexedCsvCustomer[1]);
                     $customerToPersist->setPostcode($indexedCsvCustomer[10]);
                     $customerToPersist->setCity($indexedCsvCustomer[11]);
@@ -157,11 +151,16 @@ class CustomerController extends Controller {
                     $customerToPersist->setMail($indexedCsvCustomer[16]);
                     $customerToPersist->setPhone($indexedCsvCustomer[13]);
                     $customerToPersist->setFax($indexedCsvCustomer[15]);
-                    $this->entityManager->persist($customerToPersist);
+
+                    if (!$existingCustomer) {
+                        $this->entityManager->persist($customerToPersist);
+                    }
+
                     $this->entityManager->flush();
                 }
             }
 
+            unlink($this->get('kernel')->getProjectDir() . '/public/kunden-import/kunden.csv');
 
             return $this->json(array('code' => 200, 'message' => 'Import erfolgreich'), 200);
         } catch (Exception $ex) {
