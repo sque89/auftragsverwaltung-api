@@ -2,6 +2,7 @@
 ###> symfony/framework-bundle ###
 /.env
 /public/bundles/
+/public/kunden-import
 /var/
 /vendor/
 /src/Migrations
