@@ -147,7 +147,7 @@ class CustomerController extends Controller {
                     $customerToPersist->setPostcode($indexedCsvCustomer[6]);
                     $customerToPersist->setCity($indexedCsvCustomer[7]);
                     $customerToPersist->setAddress($indexedCsvCustomer[5]);
-                    $customerToPersist->setContactPerson($indexedCsvCustomer[4]);
+                    $customerToPersist->setContactPerson($indexedCsvCustomer[4] != '' ? $indexedCsvCustomer[4] : $indexedCsvCustomer[2] . ' ' . $indexedCsvCustomer[1]);
                     $customerToPersist->setMail($indexedCsvCustomer[8]);
                     $customerToPersist->setPhone($indexedCsvCustomer[9]);
                     $customerToPersist->setFax($indexedCsvCustomer[10]);
