@@ -15,7 +15,7 @@ class Job
 {
     /**
      * @ORM\Id()
-     * @ORM\Column(type="string", length=16)
+     * @ORM\Column(type="string", length=11)
      * @Groups({"api"})
      */
     private $id;

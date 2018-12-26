@@ -198,6 +198,7 @@ class JobController extends Controller {
      * @Route("/api/job/{id}", name="updateJob", methods="POST")
      */
     public function updateJob($id, Request $request) {
+        $this->entityManager->getConnection()->beginTransaction();
         try {
             $requestData = json_decode($request->getContent(), true);
             $job = $this->entityManager->getRepository(Job::class)->find($id, \Doctrine\DBAL\LockMode::OPTIMISTIC, $requestData['version']);
@@ -208,12 +209,15 @@ class JobController extends Controller {
 
             $this->setJobData($job, $requestData);
             $this->entityManager->flush();
+            $this->entityManager->getConnection()->commit();
             return new Response(
                     $this->serializer->serialize($job, 'json', ['groups' => ['api']]), Response::HTTP_OK, ['Content-type' => 'application/json']
             );
         } catch (\Doctrine\ORM\OptimisticLockException $ole) {
+            $this->entityManager->getConnection()->rollBack();
             return $this->json(array('code' => 423, 'message' => $ole->getMessage()), 423);
         } catch (\Exception $ex) {
+            $this->entityManager->getConnection()->rollBack();
             return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
         }
     }
@@ -223,17 +227,21 @@ class JobController extends Controller {
      * @Security("has_role('ROLE_ADMIN')")
      */
     public function setInvoiceNumber($id, Request $request) {
+        $this->entityManager->getConnection()->beginTransaction();
         try {
             $requestData = json_decode($request->getContent(), true);
             $job = $this->entityManager->getRepository(Job::class)->find($id, \Doctrine\DBAL\LockMode::OPTIMISTIC, $requestData['job']['version']);
             $job->setInvoiceNumber($requestData["invoiceNumber"]);
             $this->entityManager->flush();
+            $this->entityManager->getConnection()->commit();
             return new Response(
                     $this->serializer->serialize($job, 'json', ['groups' => ['api']]), Response::HTTP_OK, ['Content-type' => 'application/json']
             );
         } catch (\Doctrine\ORM\OptimisticLockException $ole) {
+            $this->entityManager->getConnection()->rollBack();
             return $this->json(array('code' => 423, 'message' => $ole->getMessage()), 423);
         } catch (\Exception $ex) {
+            $this->entityManager->getConnection()->rollBack();
             return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
         }
     }

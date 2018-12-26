@@ -62,6 +62,7 @@ class TaskController extends Controller {
      * @Route("/api/task/{taskId}", name="changeTaskForLoggedInUser", methods="POST")
      */
     public function changeTaskForLoggedInUser($taskId, Request $request) {
+        $this->entityManager->getConnection()->beginTransaction();
         try {
             $requestData = json_decode($request->getContent(), true);
             $task = $this->entityManager->getRepository(Task::class)->find($taskId, \Doctrine\DBAL\LockMode::OPTIMISTIC, $requestData['version']);
@@ -72,6 +73,7 @@ class TaskController extends Controller {
                 $task->setDate(new \DateTime($requestData['date']));
                 $task->setArranger($this->entityManager->getRepository(User::class)->findOneByUsername($this->getUser()->getUsername()));
                 $this->entityManager->flush();
+                $this->entityManager->getConnection()->commit();
                 return new Response(
                         $this->serializer->serialize($task, 'json', ['groups' => ['api']]), Response::HTTP_OK, ['Content-type' => 'application/json']
                 );
@@ -79,8 +81,10 @@ class TaskController extends Controller {
                 return $this->json(array('code' => 403, 'message' => 'Not allowed to change task from another user'), 403);
             }
         } catch(\Doctrine\ORM\OptimisticLockException $ole) {
+            $this->entityManager->getConnection()->rollBack();
             return $this->json(array('code' => 423, 'message' => $ole->getMessage()), 423);
         } catch (\Exception $ex) {
+            $this->entityManager->getConnection()->rollBack();
             return $this->json(array('code' => 500, 'message' => $ex->getMessage()), 500);
         }
     }

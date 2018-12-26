@@ -14,7 +14,7 @@ class JobService {
     }
 
     private function getId($year, $month, $counter) {
-        return sprintf("%d-%'.02d-%'.04d", $year, $month, $counter);
+        return sprintf("%d-%'.02d-%'.03d", $year, $month, $counter);
     }
 
     public function generateJobId() {
@@ -28,7 +28,7 @@ class JobService {
             $latestJobMonth = intval(explode('-', $latestJob->getId())[1]);
             $latestJobNumber = intval(explode('-', $latestJob->getId())[2]);
 
-            if ($latestJobNumber == 9999) {
+            if ($latestJobNumber == 999) {
                 throw new \Exception('Keine Jobnummern mehr übrig für den laufenden Monat');
             }
 
