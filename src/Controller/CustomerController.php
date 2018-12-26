@@ -130,7 +130,7 @@ class CustomerController extends Controller {
 
             foreach ($csvCustomers as $csvCustomer) {
                 $indexedCsvCustomer = array_values($csvCustomer);
-                $indexedCsvCustomerId = intval($indexedCsvCustomer[2]);
+                $indexedCsvCustomerId = intval($indexedCsvCustomer[0]);
 
                 if ($indexedCsvCustomerId != 0) {
                     $customerToPersist = null;
@@ -143,14 +143,14 @@ class CustomerController extends Controller {
                         $customerToPersist->setId($indexedCsvCustomerId);
                     }
 
-                    $customerToPersist->setName($indexedCsvCustomer[4] !== '' ? $indexedCsvCustomer[4] : $indexedCsvCustomer[1]);
-                    $customerToPersist->setPostcode($indexedCsvCustomer[10]);
-                    $customerToPersist->setCity($indexedCsvCustomer[11]);
-                    $customerToPersist->setAddress($indexedCsvCustomer[9]);
-                    $customerToPersist->setContactPerson($indexedCsvCustomer[12]);
-                    $customerToPersist->setMail($indexedCsvCustomer[16]);
-                    $customerToPersist->setPhone($indexedCsvCustomer[13]);
-                    $customerToPersist->setFax($indexedCsvCustomer[15]);
+                    $customerToPersist->setName($indexedCsvCustomer[3] !== '' ? $indexedCsvCustomer[3] : $indexedCsvCustomer[1]);
+                    $customerToPersist->setPostcode($indexedCsvCustomer[6]);
+                    $customerToPersist->setCity($indexedCsvCustomer[7]);
+                    $customerToPersist->setAddress($indexedCsvCustomer[5]);
+                    $customerToPersist->setContactPerson($indexedCsvCustomer[4]);
+                    $customerToPersist->setMail($indexedCsvCustomer[8]);
+                    $customerToPersist->setPhone($indexedCsvCustomer[9]);
+                    $customerToPersist->setFax($indexedCsvCustomer[10]);
 
                     if (!$existingCustomer) {
                         $this->entityManager->persist($customerToPersist);
