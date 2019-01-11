@@ -24,7 +24,7 @@ class Customer
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=5, nullable=true)
+     * @ORM\Column(type="string", length=7, nullable=true)
      * @Groups({"api"})
      */
     private $postcode;
@@ -42,7 +42,7 @@ class Customer
     private $address;
 
     /**
-     * @ORM\Column(type="string", length=64, nullable=true)
+     * @ORM\Column(type="string", length=128, nullable=true)
      * @Groups({"api"})
      */
     private $contactPerson;

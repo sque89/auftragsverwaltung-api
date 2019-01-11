@@ -124,7 +124,7 @@ class CustomerController extends Controller {
      */
     public function importCustomers() {
         try {
-            $csvCustomers = $this->serializer->decode(file_get_contents($this->get('kernel')->getProjectDir() . '/public/kunden-import/kunden.csv'), 'csv');
+            $csvCustomers = $this->serializer->decode(utf8_encode(file_get_contents($this->get('kernel')->getProjectDir() . '/public/kunden-import/kunden.csv')), 'csv');
             $existingCustomer = null;
             $csvCustomer = null;
 
