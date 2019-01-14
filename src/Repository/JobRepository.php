@@ -29,7 +29,6 @@ class JobRepository extends ServiceEntityRepository {
 
     public function findByTimespan(\DateTime $from, \DateTime $to, $groupBy = null) {
         $query = $this->createQueryBuilder('j')
-                ->orderBy('j.id', 'DESC')
                 ->where('j.dateIncoming >= :from')
                 ->andWhere('j.dateIncoming <= :to')
                 ->setParameter('from', $from)
@@ -37,6 +36,8 @@ class JobRepository extends ServiceEntityRepository {
 
         if ($groupBy) {
             $query->select('count(j.id) as count, j.' . $groupBy)->groupBy('j.' . $groupBy);
+        } else {
+            $query->orderBy('j.id', 'DESC');
         }
 
         return $query->getQuery()
