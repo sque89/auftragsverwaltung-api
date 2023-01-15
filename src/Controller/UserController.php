@@ -4,24 +4,24 @@ namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
 use App\Entity\Role;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-class UserController extends Controller {
+class UserController extends AbstractController {
 
     private $entityManager;
     private $encoder;
     private $serializer;
 
-    public function __construct(EntityManagerInterface $entityManager, UserPasswordEncoderInterface $encoder) {
+    public function __construct(EntityManagerInterface $entityManager, UserPasswordHasherInterface $encoder) {
         $normalizer = new ObjectNormalizer();
         $normalizer->setIgnoredAttributes(array('salt', 'password'));
 

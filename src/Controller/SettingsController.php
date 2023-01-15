@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Setting;
@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-class SettingsController extends Controller {
+class SettingsController extends AbstractController {
 
     private $entityManager;
     private $serializer;
@@ -23,9 +23,7 @@ class SettingsController extends Controller {
         $this->serializer = new Serializer($normalizer, array(new JsonEncoder()));
     }
 
-    /**
-     * @Route("/api/settings", name="getAllSettings", methods="GET")
-     */
+    #[Route('/api/settings', methods: ['GET'])]
     public function getAllSettings() {
         try {
             $settings = $this->entityManager->getRepository(Setting::class)->findAll();
@@ -37,9 +35,7 @@ class SettingsController extends Controller {
         }
     }
 
-    /**
-     * @Route("/api/settings", name="setSettings", methods="POST")
-     */
+    #[Route('/api/settings', methods: ['POST'])]
     public function setSettings(Request $request) {
         try {
             $requestData = json_decode($request->getContent(), true);
