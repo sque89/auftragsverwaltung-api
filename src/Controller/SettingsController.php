@@ -23,7 +23,7 @@ class SettingsController extends AbstractController {
         $this->serializer = new Serializer($normalizer, array(new JsonEncoder()));
     }
 
-    #[Route('/api/settings', methods: ['GET'])]
+    #[Route('/api/settings', name: 'get_settings', methods: ['GET'])]
     public function getAllSettings() {
         try {
             $settings = $this->entityManager->getRepository(Setting::class)->findAll();
