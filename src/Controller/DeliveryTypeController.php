@@ -22,9 +22,7 @@ class DeliveryTypeController extends AbstractController {
         $this->serializer = new Serializer($normalizer, array(new JsonEncoder()));
     }
 
-    /**
-     * @Route("/api/delivery-types", name="getAllDeliveryTypes", methods="GET")
-     */
+    #[Route('/api/delivery-types', name: 'get_delivery_types', methods: ['GET'])]
     public function getAllDeliveryTypes() {
         try {
             $deliveryTypes = $this->entityManager->getRepository(DeliveryType::class)->findAll();

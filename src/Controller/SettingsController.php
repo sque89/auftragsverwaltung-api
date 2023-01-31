@@ -35,7 +35,7 @@ class SettingsController extends AbstractController {
         }
     }
 
-    #[Route('/api/settings', methods: ['POST'])]
+    #[Route('/api/settings', name: 'set_settings', methods: ['POST'])]
     public function setSettings(Request $request) {
         try {
             $requestData = json_decode($request->getContent(), true);

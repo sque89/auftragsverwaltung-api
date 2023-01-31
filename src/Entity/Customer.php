@@ -2,67 +2,48 @@
 
 namespace App\Entity;
 
+use App\Repository\CustomerRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
- */
+#[ORM\Entity(repositoryClass: CustomerRepository::class)]
 class Customer
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="integer")
-     * @Groups({"api"})
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: "integer")]
+    #[Groups(['api'])]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=256)
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "string", length: 256)]
+    #[Groups(['api'])]
     private $name;
 
-    /**
-     * @ORM\Column(type="string", length=7, nullable=true)
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "string", length: 7, nullable: true)]
+    #[Groups(['api'])]
     private $postcode;
 
-    /**
-     * @ORM\Column(type="string", length=128, nullable=true)
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "string", length: 128, nullable: true)]
+    #[Groups(['api'])]
     private $city;
 
-    /**
-     * @ORM\Column(type="string", length=128, nullable=true)
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "string", length: 128, nullable: true)]
+    #[Groups(['api'])]
     private $address;
 
-    /**
-     * @ORM\Column(type="string", length=128, nullable=true)
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "string", length: 128, nullable: true)]
+    #[Groups(['api'])]
     private $contactPerson;
 
-    /**
-     * @ORM\Column(type="string", length=64, nullable=true)
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "string", length: 64, nullable: true)]
+    #[Groups(['api'])]
     private $mail;
 
-    /**
-     * @ORM\Column(type="string", length=32, nullable=true)
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "string", length: 32, nullable: true)]
+    #[Groups(['api'])]
     private $phone;
 
-    /**
-     * @ORM\Column(type="string", length=32, nullable=true)
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "string", length: 32, nullable: true)]
+    #[Groups(['api'])]
     private $fax;
 
     public function getId() {

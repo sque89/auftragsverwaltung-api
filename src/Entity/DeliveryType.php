@@ -2,26 +2,21 @@
 
 namespace App\Entity;
 
+use App\Repository\DeliveryTypeRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\DeliveryTypeRepository")
- */
+#[ORM\Entity(repositoryClass: DeliveryTypeRepository::class)]
 class DeliveryType
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     * @Groups({"api"})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: "integer")]
+    #[Groups(['api'])]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=64)
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "string", length: 64, nullable: true)]
+    #[Groups(['api'])]
     private $label;
 
     public function getId()

@@ -2,27 +2,20 @@
 
 namespace App\Entity;
 
+use App\Repository\SettingRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\SettingRepository")
- */
+#[ORM\Entity(repositoryClass: SettingRepository::class)]
 class Setting
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="string", length=128)
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: "string", length: 128)]
     private $id;
 
-    /**
-     * @ORM\Column(type="text")
-     */
+    #[ORM\Column(type: "text")]
     private $value;
 
-    /**
-     * @ORM\Column(type="string", length=128)
-     */
+    #[ORM\Column(type: "string", length: 128)]
     private $label;
 
     public function getId() {
