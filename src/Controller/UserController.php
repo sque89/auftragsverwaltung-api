@@ -52,9 +52,7 @@ class UserController extends AbstractController {
         return $user;
     }
 
-    /**
-     * @Route("/api/user/{username}", name="getUserByUsername", methods="GET")
-     */
+    #[Route('/api/user/{username}', name: 'get_user_by_username', methods: ['GET'])]
     public function getUserByUsername($username) {
         try {
             $user = $this->entityManager->getRepository(User::class)->findOneByUsername($username);
@@ -66,10 +64,8 @@ class UserController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/user/{username}", name="deleteUserByUsername", methods="DELETE")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route('/api/user/{username}', name: 'delete_user_by_username', methods: ['DELETE'])]
+    #[Security('has_role("ROLE_ADMIN")')]
     public function deleteUserByUsername($username) {
         if ($username === $this->getUser()->getUsername()) {
             return $this->json(array('code' => 403, 'message' => 'Not allowed to delete yourself'), 403);
@@ -87,10 +83,8 @@ class UserController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/user/activate/{username}", name="activateUserByUsername", methods="POST")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route('/api/user/activate/{username}', name: 'activate_user_by_username', methods: ['POST'])]
+    #[Security('has_role("ROLE_ADMIN")')]
     public function activateUserByUsername($username) {
         if ($username === $this->getUser()->getUsername()) {
             return $this->json(array('code' => 403, 'message' => 'Not allowed to activate yourself'), 403);
@@ -108,10 +102,8 @@ class UserController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/user/deactivate/{username}", name="deactivateUserByUsername", methods="POST")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route('/api/user/deactivate/{username}', name: 'deactivate_user_by_username', methods: ['POST'])]
+    #[Security('has_role("ROLE_ADMIN")')]
     public function deactivateUserByUsername($username) {
         if ($username === $this->getUser()->getUsername()) {
             return $this->json(array('code' => 403, 'message' => 'Not allowed to deactivate yourself'), 403);
@@ -129,10 +121,8 @@ class UserController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/users", name="getAllUsers", methods="GET")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route('/api/users', name: 'get_all_users', methods: ['GET'])]
+    #[Security('has_role("ROLE_ADMIN")')]
     public function getAllUsers() {
         try {
             $users = $this->entityManager->getRepository(User::class)->findAll();
@@ -144,9 +134,7 @@ class UserController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/users/unsensitive", name="getAllUsersUnsensitive", methods="GET")
-     */
+    #[Route('/api/users/unsensitive', name: 'get_all_users_/unsensitive', methods: ['GET'])]
     public function getAllUsersUnsensitive() {
         try {
             $users = $this->entityManager->getRepository(User::class)->findAll();
@@ -158,10 +146,8 @@ class UserController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/user", name="addUser", methods="PUT")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route('/api/user', name: 'add_user', methods: ['PUT'])]
+    #[Security('has_role("ROLE_ADMIN")')]
     public function addUser(Request $request) {
         try {
             $requestData = json_decode($request->getContent(), true);
@@ -182,9 +168,7 @@ class UserController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/user/commondata", name="changeCommonDataForLoggedInUser", methods="POST")
-     */
+    #[Route('/api/user/commondata', name: 'change_common_data_for_logged_in_user', methods: ['GET'])]
     public function changeCommonDataForLoggedInUser(Request $request) {
         try {
             $changedUser = $this->changeCommonData($this->getUser()->getUsername(), json_decode($request->getContent(), true), false);
@@ -196,9 +180,7 @@ class UserController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/user/settings", name="changeSettingsForLoggedInUser", methods="POST")
-     */
+    #[Route('/api/user/settings', name: 'change_settings_for_logged_in_user', methods: ['POST'])]
     public function changeSettingsForLoggedInUser(Request $request) {
         try {
             $loggedInUser = $this->entityManager->getRepository(User::class)->findOneByUsername($this->getUser()->getUsername());
@@ -210,10 +192,8 @@ class UserController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/user/commondata/{username}", name="changeCommonDataByUsername", methods="POST")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route('/api/user/commondata/{username}', name: 'change_common_data_by_username', methods: ['POST'])]
+    #[Security('has_role("ROLE_ADMIN")')]
     public function changeCommonDataByUsername(Request $request, $username) {
         try {
             $changedUser = $this->changeCommonData($username, json_decode($request->getContent(), true), true);
@@ -225,9 +205,7 @@ class UserController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/user/password", name="changePasswordForLoggedInUser", methods="POST")
-     */
+    #[Route('/api/user/password', name: 'change_password_for_logged_in_user', methods: ['POST'])]
     public function changePasswordForLoggedInUser(Request $request) {
         $responseJson = null;
         $httpStatus = 200;
@@ -253,10 +231,8 @@ class UserController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/user/password/{username}", name="changePasswordByUsername", methods="POST")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route('/api/user/password/{username}', name: 'change_password_by_username', methods: ['POST'])]
+    #[Security('has_role("ROLE_ADMIN")')]
     public function changePasswordByUsername(Request $request, $username) {
         try {
             $requestData = json_decode($request->getContent(), true);

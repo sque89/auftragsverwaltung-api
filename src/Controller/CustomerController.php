@@ -26,9 +26,7 @@ class CustomerController extends AbstractController {
         $this->serializer = new Serializer(array($normalizer), array(new JsonEncoder(), new CsvEncoder()));
     }
 
-    /**
-     * @Route("/api/customer", name="getAllCustomers", methods="GET")
-     */
+    #[Route('/api/customer', name: 'get_all_customers', methods: ['GET'])]
     public function getAllCustomers() {
         try {
             $customers = $this->entityManager->getRepository(Customer::class)->findAll();
@@ -40,9 +38,7 @@ class CustomerController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/customer/{id}", name="getCustomerById", methods="GET")
-     */
+    #[Route('/api/customer/{id}', name: 'get_customer_by_id', methods: ['GET'])]
     public function getCustomerById($id) {
         try {
             $customer = $this->entityManager->getRepository(Customer::class)->findOneById($id);
@@ -54,9 +50,7 @@ class CustomerController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/customer/find/{searchString}", name="getCustomersBySearchString", methods="GET")
-     */
+    #[Route('/api/customer/find/{searchString}', name: 'get_customer_by_search_string', methods: ['GET'])]
     public function getCustomersBySearchString($searchString) {
         try {
             $customer = $this->entityManager->getRepository(Customer::class)->findBySearchString($searchString);
@@ -68,10 +62,8 @@ class CustomerController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/customer/{id}", name="changeCustomerById", methods="POST")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route('/api/customer/{id}', name: 'change_customer_by_id', methods: ['POST'])]
+    #[Security('has_role("ROLE_ADMIN")')]
     public function changeCustomerById(Request $request, $id) {
         try {
             $requestData = json_decode($request->getContent(), true);
@@ -93,10 +85,8 @@ class CustomerController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/customer", name="addCustomer", methods="PUT")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route('/api/customer', name: 'add_customer', methods: ['PUT'])]
+    #[Security('has_role("ROLE_ADMIN")')]
     public function addCustomer(Request $request) {
         try {
             $requestData = json_decode($request->getContent(), true);
@@ -119,9 +109,7 @@ class CustomerController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/customers/import", name="importCustomers", methods="GET")
-     */
+    #[Route('/api/customers/import', name: 'import_customers', methods: ['GET'])]
     public function importCustomers() {
         try {
             $csvCustomers = $this->serializer->decode(utf8_encode(file_get_contents($this->get('kernel')->getProjectDir() . '/public/kunden-import/kunden.csv')), 'csv');

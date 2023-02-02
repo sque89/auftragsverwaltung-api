@@ -2,71 +2,55 @@
 
 namespace App\Entity;
 
+use App\Repository\TaskRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\TaskRepository")
- * @ORM\HasLifecycleCallbacks()
- */
+#[ORM\Entity(repositoryClass: TaskRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Task
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     * @Groups({"api"})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue()]
+    #[ORM\Column(type: "integer")]
+    #[Groups(['api'])]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "integer")]
+    #[Groups(['api'])]
     private $workingTime;
 
-    /**
-     * @ORM\Column(type="text")
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "text")]
+    #[Groups(['api'])]
     private $description;
 
-    /**
-     * @ORM\Column(type="date")
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "date")]
+    #[Groups(['api'])]
     private $date;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"api"})
-     */
+    #[ManyToOne(targetEntity="User")]
+    #[JoinColumn(nullable=false)]
+    #[Groups(['api'])]
     private $arranger;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Job")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"api"})
-     */
+    #[ManyToOne(targetEntity="Job")]
+    #[JoinColumn(nullable=false)]
+    #[Groups(['api'])]
     private $job;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "datetime_immutable")]
+    #[Groups(['api'])]
     private $createdAt;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "datetime_immutable")]
+    #[Groups(['api'])]
     private $updatedAt;
 
     /**
-     * @ORM\Version @ORM\Column(type="integer")
-     * @Groups({"api"})
-     */
+     * @ORM\Version @ORM\Column(type: "integer")
+    #[Groups(['api'])]
     private $version;
 
     public function getId() {

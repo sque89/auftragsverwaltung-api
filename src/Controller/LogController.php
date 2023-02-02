@@ -15,9 +15,7 @@ class LogController extends AbstractController {
     public function __construct() {
     }
 
-    /**
-     * @Route("/api/log", name="logError", methods="PUT")
-     */
+    #[Route('/api/log', name: 'log_error', methods: ['PUT'])]
     public function logError(Request $request, LoggerInterface $logger) {
         try {
             $requestData = json_decode($request->getContent(), true);

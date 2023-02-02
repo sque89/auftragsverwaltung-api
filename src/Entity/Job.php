@@ -2,104 +2,80 @@
 
 namespace App\Entity;
 
+use App\Repository\JobRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-/**
- * @ORM\Entity(repositoryClass="App\Repository\JobRepository")
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Entity(repositoryClass: JobRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Job
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="string", length=11)
-     * @Groups({"api"})
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: "string", length: 11)]
+    #[Groups(['api'])]
     private $id;
 
-    /**
-     * @ORM\Column(type="date")
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "date")]
+    #[Groups(['api'])]
     private $dateIncoming;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "date", nullable: true)]
+    #[Groups(['api'])]
     private $dateDeadline;
 
     /**
-     * @ORM\ManyToOne(targetEntity="DeliveryType")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"api"})
-     */
+    #[ManyToOne(targetEntity="DeliveryType")]
+    #[JoinColumn(nullable=false)]
+    #[Groups(['api'])]
     private $deliveryType;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Customer")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"api"})
-     */
+    #[ManyToOne(targetEntity="Customer")]
+    #[JoinColumn(nullable=false)]
+    #[Groups(['api'])]
     private $customer;
 
-    /**
-     * @ORM\Column(type="text")
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "text")]
+    #[Groups(['api'])]
     private $description;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "text", nullable=true)]
+    #[Groups(['api'])]
     private $notes;
 
-    /**
-     * @ORM\Column(type="text", nullable=true)
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "text", nullable=true)]
+    #[Groups(['api'])]
     private $externalPurchase;
 
-    /**
-     * @ORM\Column(type="string", length=16, nullable=true)
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "string", length=16, nullable=true)]
+    #[Groups(['api'])]
     private $invoiceNumber;
 
     /**
      * Many Jobs have Many Arrangers.
      * @ORM\ManyToMany(targetEntity="User", inversedBy="jobs")
-     * @Groups({"api"})
-     */
+    #[Groups(['api'])]
     private $arrangers;
 
     /**
      * One Job has Many Tasks.
      * @ORM\OneToMany(targetEntity="Task", mappedBy="job")
-     * @Groups({"api"})
-     */
+    #[Groups(['api'])]
     private $tasks;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "datetime_immutable")]
+    #[Groups(['api'])]
     private $createdAt;
 
-    /**
-     * @ORM\Column(type="datetime_immutable")
-     * @Groups({"api"})
-     */
+    #[ORM\Column(type: "datetime_immutable")]
+    #[Groups(['api'])]
     private $updatedAt;
 
     /**
-     * @ORM\Version @ORM\Column(type="integer")
-     * @Groups({"api"})
-     */
+     * @ORM\Version @ORM\Column(type: "integer")
+    #[Groups(['api'])]
     private $version;
 
     public function __construct() {

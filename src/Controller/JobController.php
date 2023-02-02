@@ -54,9 +54,7 @@ class JobController extends AbstractController {
         ));
     }
 
-    /**
-     * @Route("/api/jobs", name="getJobs", methods="GET")
-     */
+    #[Route('/api/jobs', name: 'get_jobs', methods: ['GET'])]
     public function getJobs() {
         try {
             $jobs = $this->entityManager->getRepository(Job::class)->findAll();
@@ -68,9 +66,7 @@ class JobController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/jobs/timespan/{from}/{to}", name="getJobsInTimespan", methods="GET")
-     */
+    #[Route('/api/jobs/timespan/{from}/{to}', name: 'get_jobs_in_timespan', methods: ['GET'])]
     public function getJobsInTimespan($from, $to) {
         try {
 
@@ -85,9 +81,7 @@ class JobController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/jobs/timespan/{from}/{to}/income/count", name="getJobIncomeCountInTimespan", methods="GET")
-     */
+    #[Route('/api/jobs/timespan/{from}/{to}/income/count', name: 'get_job_income_count_in_timespan', methods: ['GET'])]
     public function getJobIncomeCountInTimespan($from, $to) {
         try {
 
@@ -104,9 +98,7 @@ class JobController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/jobs/open/current-user", name="getOpenJobsForLoggedInUser", methods="GET")
-     */
+    #[Route('/api/jobs/open/current-user', name: 'get_open_jobs_for_logged_in_user', methods: ['GET'])]
     public function getOpenJobsForLoggedInUser() {
         try {
             $jobs = $this->entityManager->getRepository(Job::class)->findOpenJobsForUser($this->getUser());
@@ -118,9 +110,7 @@ class JobController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/jobs/open/count", name="getOpenJobsCount", methods="GET")
-     */
+    #[Route('/api/jobs/open/count', name: 'get_open_jobs_count', methods: ['GET'])]
     public function getOpenJobsCount() {
         try {
             $count = $this->entityManager->getRepository(Job::class)->getOpenJobCount();
@@ -132,9 +122,7 @@ class JobController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/jobs/open/intime/count", name="getOpenJobsIntimeCount", methods="GET")
-     */
+    #[Route('/api/jobs/open/intime/count', name: 'get_open_jobs_intime_count', methods: ['GET'])]
     public function getOpenJobsIntimeCount() {
         try {
             $count = $this->entityManager->getRepository(Job::class)->getOpenJobIntimeCount();
@@ -146,9 +134,7 @@ class JobController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/jobs/open/overdue/count", name="getOpenJobsOverdueCount", methods="GET")
-     */
+    #[Route('/api/jobs/open/overdue/count', name: 'get_open_jobs_overdue_count', methods: ['GET'])]
     public function getOpenJobsOverdueCount() {
         try {
             $count = $this->entityManager->getRepository(Job::class)->getOpenJobOverdueCount();
@@ -160,9 +146,7 @@ class JobController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/job/{id}", name="getJobById", methods="GET")
-     */
+    #[Route('/api/job/{id}', name: 'get_job_by_id', methods: ['GET'])]
     public function getJobById($id) {
         try {
 
@@ -175,9 +159,7 @@ class JobController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/job", name="createJob", methods="POST")
-     */
+    #[Route('/api/job', name: 'create_job', methods: ['POST'])]
     public function createJob(Request $request) {
         try {
             $requestData = json_decode($request->getContent(), true);
@@ -194,9 +176,7 @@ class JobController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/job/{id}", name="updateJob", methods="POST")
-     */
+    #[Route('/api/job/{id}', name: 'update_job', methods: ['POST'])]
     public function updateJob($id, Request $request) {
         $this->entityManager->getConnection()->beginTransaction();
         try {
@@ -222,10 +202,8 @@ class JobController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/job/{id}/invoice", name="setInvoiceNumber", methods="POST")
-     * @Security("has_role('ROLE_ADMIN')")
-     */
+    #[Route('/api/job/{id}/invoice', name: 'set_invoice_number', methods: ['POST'])]
+    #[Security('has_role("ROLE_ADMIN")')]
     public function setInvoiceNumber($id, Request $request) {
         $this->entityManager->getConnection()->beginTransaction();
         try {

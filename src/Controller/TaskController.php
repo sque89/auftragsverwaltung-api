@@ -36,9 +36,7 @@ class TaskController extends AbstractController {
         $this->serializer = new Serializer($normalizer, array(new JsonEncoder()));
     }
 
-    /**
-     * @Route("/api/task", name="createTaskForLoggedInUser", methods="POST")
-     */
+    #[Route('/api/task', name: 'create_task_for_logged_in_user', methods: ['POST'])]
     public function createTaskForLoggedInUser(Request $request) {
         try {
             $requestData = json_decode($request->getContent(), true);
@@ -58,9 +56,7 @@ class TaskController extends AbstractController {
         }
     }
 
-    /**
-     * @Route("/api/task/{taskId}", name="changeTaskForLoggedInUser", methods="POST")
-     */
+    #[Route('/api/task/{taskId}', name: 'change_task_for_logged_in_user', methods: ['POST'])]
     public function changeTaskForLoggedInUser($taskId, Request $request) {
         $this->entityManager->getConnection()->beginTransaction();
         try {
