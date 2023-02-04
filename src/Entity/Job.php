@@ -25,13 +25,13 @@ class Job
     #[Groups(['api'])]
     private $dateDeadline;
 
-    #[ManyToOne(targetEntity: "DeliveryType")]
-    #[JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: "DeliveryType")]
+    #[ORM\JoinColumn(nullable: false)]
     #[Groups(['api'])]
     private $deliveryType;
 
-    #[ManyToOne(targetEntity: "Customer")]
-    #[JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: "Customer")]
+    #[ORM\JoinColumn(nullable: false)]
     #[Groups(['api'])]
     private $customer;
 
@@ -165,7 +165,7 @@ class Job
         return $this;
     }
 
-    public function setArrangers(ArrayCollection $arrangers): self {
+    public function setArrangers(ArrayCollection $arrangers): void {
         $this->arrangers = $arrangers;
     }
 
@@ -196,7 +196,7 @@ class Job
         }
     }
 
-    public function setTasks(ArrayCollection $tasks): self {
+    public function setTasks(ArrayCollection $tasks): void {
         $this->tasks = $tasks;
     }
 

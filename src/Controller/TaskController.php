@@ -15,9 +15,8 @@ use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Doctrine\Common\Annotations\AnnotationReader;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use \Exception;
 
 class TaskController extends AbstractController {
 
@@ -26,11 +25,13 @@ class TaskController extends AbstractController {
     private $serializer;
 
     public function __construct(EntityManagerInterface $entityManager, JobService $jobService) {
-        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-        $normalizer = array(new DateTimeNormalizer(), new ObjectNormalizer($classMetadataFactory));
-        $normalizer[1]->setCircularReferenceHandler(function ($object) {
-            return $object->getId();
-        });
+        $defaultContext = [
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object, $format, $context) {
+                return $object->getId();
+            },
+        ];
+
+        $normalizer = array(new DateTimeNormalizer(), new ObjectNormalizer(null, null, null, null, null, null, $defaultContext));
         $this->jobService = $jobService;
         $this->entityManager = $entityManager;
         $this->serializer = new Serializer($normalizer, array(new JsonEncoder()));

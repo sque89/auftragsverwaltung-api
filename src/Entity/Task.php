@@ -28,13 +28,13 @@ class Task
     #[Groups(['api'])]
     private $date;
 
-    #[ManyToOne(targetEntity: "User")]
-    #[JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: "User")]
+    #[ORM\JoinColumn(nullable: false)]
     #[Groups(['api'])]
     private $arranger;
 
-    #[ManyToOne(targetEntity: "Job")]
-    #[JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(targetEntity: "Job")]
+    #[ORM\JoinColumn(nullable: false)]
     #[Groups(['api'])]
     private $job;
 
