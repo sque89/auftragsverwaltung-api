@@ -28,15 +28,13 @@ class Task
     #[Groups(['api'])]
     private $date;
 
-    /**
-    #[ManyToOne(targetEntity="User")]
-    #[JoinColumn(nullable=false)]
+    #[ManyToOne(targetEntity: "User")]
+    #[JoinColumn(nullable: false)]
     #[Groups(['api'])]
     private $arranger;
 
-    /**
-    #[ManyToOne(targetEntity="Job")]
-    #[JoinColumn(nullable=false)]
+    #[ManyToOne(targetEntity: "Job")]
+    #[JoinColumn(nullable: false)]
     #[Groups(['api'])]
     private $job;
 
@@ -48,8 +46,8 @@ class Task
     #[Groups(['api'])]
     private $updatedAt;
 
-    /**
-     * @ORM\Version @ORM\Column(type: "integer")
+    #[ORM\Version]
+    #[ORM\Column(type: "integer")]
     #[Groups(['api'])]
     private $version;
 

@@ -5,11 +5,12 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[Table(name: "user")]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface, \Serializable {
+class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serializable {
 
     #[ORM\Column(type: "integer")]
     #[ORM\Id]
@@ -125,16 +126,20 @@ class User implements UserInterface, \Serializable {
         $this->password = $password;
     }
 
-    public function getPassword() {
+    public function getPassword(): string {
         return $this->password;
     }
 
-    public function getRoles() {
+    public function getRoles(): array {
         $rolesOfUser = array();
         foreach ($this->roles as $key => $value) {
             $rolesOfUser[] = $value->getName();
         }
         return $rolesOfUser;
+    }
+
+    public function getUserIdentifier(): string {
+        return $this->username;
     }
 
     public function setRoles($roles) {

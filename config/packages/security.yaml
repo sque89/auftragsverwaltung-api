@@ -43,3 +43,11 @@ security:
     access_control:
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+    password_hashers:
+        # auto hasher with default options for the User class (and children)
+        App\Entity\User: 'auto'
+
+        # auto hasher with custom options for all PasswordAuthenticatedUserInterface instances
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+            algorithm: 'auto'
+            cost:      15

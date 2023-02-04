@@ -25,15 +25,13 @@ class Job
     #[Groups(['api'])]
     private $dateDeadline;
 
-    /**
-    #[ManyToOne(targetEntity="DeliveryType")]
-    #[JoinColumn(nullable=false)]
+    #[ManyToOne(targetEntity: "DeliveryType")]
+    #[JoinColumn(nullable: false)]
     #[Groups(['api'])]
     private $deliveryType;
 
-    /**
-    #[ManyToOne(targetEntity="Customer")]
-    #[JoinColumn(nullable=false)]
+    #[ManyToOne(targetEntity: "Customer")]
+    #[JoinColumn(nullable: false)]
     #[Groups(['api'])]
     private $customer;
 
@@ -41,27 +39,23 @@ class Job
     #[Groups(['api'])]
     private $description;
 
-    #[ORM\Column(type: "text", nullable=true)]
+    #[ORM\Column(type: "text", nullable: true)]
     #[Groups(['api'])]
     private $notes;
 
-    #[ORM\Column(type: "text", nullable=true)]
+    #[ORM\Column(type: "text", nullable: true)]
     #[Groups(['api'])]
     private $externalPurchase;
 
-    #[ORM\Column(type: "string", length=16, nullable=true)]
+    #[ORM\Column(type: "string", length: 16, nullable: true)]
     #[Groups(['api'])]
     private $invoiceNumber;
 
-    /**
-     * Many Jobs have Many Arrangers.
-     * @ORM\ManyToMany(targetEntity="User", inversedBy="jobs")
+    #[ORM\ManyToMany(targetEntity: "User", inversedBy: "jobs")]
     #[Groups(['api'])]
     private $arrangers;
 
-    /**
-     * One Job has Many Tasks.
-     * @ORM\OneToMany(targetEntity="Task", mappedBy="job")
+    #[ORM\OneToMany(targetEntity: "Task", mappedBy: "job")]
     #[Groups(['api'])]
     private $tasks;
 
@@ -73,8 +67,8 @@ class Job
     #[Groups(['api'])]
     private $updatedAt;
 
-    /**
-     * @ORM\Version @ORM\Column(type: "integer")
+    #[ORM\Version]
+    #[ORM\Column(type: "integer")]
     #[Groups(['api'])]
     private $version;
 
@@ -237,10 +231,8 @@ class Job
         return $this->version;
     }
 
-    /**
-     * @ORM\PrePersist
-     * @ORM\PreUpdate
-     */
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
     public function updatedTimestamps() {
         $this->setUpdatedAt(new \DateTimeImmutable('now'));
 
