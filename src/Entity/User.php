@@ -23,6 +23,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, \Serial
     private $username;
 
     #[ORM\Column(type: "string", length: 64)]
+    #[Ignore]
     private $password;
 
     #[ORM\Column(type: "string", length: 50)]

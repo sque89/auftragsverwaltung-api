@@ -23,7 +23,6 @@ class UserController extends AbstractController {
 
     public function __construct(EntityManagerInterface $entityManager, UserPasswordHasherInterface $encoder) {
         $normalizer = new ObjectNormalizer();
-        $normalizer->setIgnoredAttributes(array('salt', 'password'));
 
         $this->entityManager = $entityManager;
         $this->encoder = $encoder;
