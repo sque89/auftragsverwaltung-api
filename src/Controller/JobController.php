@@ -19,7 +19,6 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use \Exception;
-
 class JobController extends AbstractController {
 
     private $jobService;
